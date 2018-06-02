@@ -199,3 +199,16 @@ public final class WebSocket: BasicWorker {
         channel.writeAndFlush(frame, promise: promise)
     }
 }
+
+infix operator .==: ComparisonPrecedence
+public func .==<T, R: Equatable>(tuple: (T, T), path: KeyPath<T, R>) -> Bool {
+	return tuple.0[keyPath: path] == tuple.1[keyPath: path]
+}
+
+extension WebSocket: Equatable {
+	public static func == (lhs: WebSocket, rhs: WebSocket) -> Bool {		
+		return
+			(lhs, rhs) .== \.channel.remoteAddress &&
+				(lhs, rhs) .== \.channel.localAddress
+	}
+}
